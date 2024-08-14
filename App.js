@@ -3,26 +3,28 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SplashScreen from './src/presentation/splash/screens/SplashScreen';
 import IndexScreen from './src/presentation/IndexScreen/IndexScreen';
+import AppRoutes from './src/presentation/core/routes/AppRoutes'; 
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator initialRouteName="Splash">
-        <Stack.Screen 
-          name="Splash"
-          component={SplashScreen} 
-          options={{ headerShown: false }} 
-        />
-        <Stack.Screen 
-          name="Index" 
-          component={IndexScreen} 
-          options={{ headerShown: false }} 
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
+  return <AppRoutes />;
+  // return (
+  //   <NavigationContainer>
+  //     <Stack.Navigator initialRouteName="Splash">
+  //       <Stack.Screen 
+  //         name="Splash"
+  //         component={SplashScreen} 
+  //         options={{ headerShown: false }} 
+  //       />
+  //       <Stack.Screen 
+  //         name="Index" 
+  //         component={IndexScreen} 
+  //         options={{ headerShown: false }} 
+  //       />
+  //     </Stack.Navigator>
+  //   </NavigationContainer>
+  // );
 }
 
 

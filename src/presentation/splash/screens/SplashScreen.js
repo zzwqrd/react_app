@@ -1,12 +1,17 @@
 import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import IndexScreen from '../../IndexScreen/IndexScreen';
+
+import NamedRoutes from '../../core/routes/NamedRoutes';
 
 const SplashScreen = ({ navigation }) => {
   useEffect(() => {
-    setTimeout(() => {
-      navigation.replace("Index");
-    }, 3000); // Display splash screen for 3 seconds
+   
+    const timer = setTimeout(() => {
+      navigation.replace(NamedRoutes.index);
+    }, 3000);
+
+   
+    return () => clearTimeout(timer);
   }, [navigation]);
 
   return (
@@ -21,11 +26,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#000', // Customize the background color
+    backgroundColor: '#000', 
   },
   title: {
     fontSize: 30,
-    color: '#fff', // Customize the text color
+    color: '#fff',
   },
 });
 
