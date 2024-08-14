@@ -1,7 +1,7 @@
-// NamedRoutes.js
+
 const NamedRoutes = {
-    splash: '/splash',
-    index: '/index',
+    splash: 'splash',
+    index: 'index',
   
   };
   
