@@ -20,7 +20,13 @@ export default IndexScreen = () => {
  
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} >
+       {/* <View style={styles.appBar}>
+        <Text style={styles.appBarTitle}>My Home</Text>
+        <TouchableOpacity style={styles.appBarButton} onPress={() => alert('Button Pressed')}>
+          <Text style={styles.appBarButtonText}>Button</Text>
+        </TouchableOpacity>
+      </View> */}
       <View style={styles.carouselContainer}>
         <ScrollView
           horizontal={true}
@@ -77,6 +83,30 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+  },
+  appBar: {
+    height: 60,
+    backgroundColor: '#f4511e',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+    paddingTop: 10,
+  },
+  appBarTitle: {
+    flex: 1,
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  appBarButton: {
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+  },
+  appBarButtonText: {
+    color: '#fff',
+    fontSize: 16,
   },
   carouselContainer: {
     height: height / 3,

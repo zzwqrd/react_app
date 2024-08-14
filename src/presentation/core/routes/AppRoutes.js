@@ -22,7 +22,18 @@ const AppRoutes = () => {
         <Stack.Screen
           name={NamedRoutes.index}
           component={IndexScreen}
-          options={getTransition(NavigatorAnimation.SCALE)}
+          options={{
+            title: 'My Home',
+            headerStyle: {
+              backgroundColor: '#fff', // Background color of the AppBar
+            },
+            headerTintColor: '#f00', // Color of the back button and title
+            headerTitleStyle: {
+              fontSize:15,
+              fontWeight: 'bold', // Custom style for the title
+            },
+          }}
+          // options={getTransition(NavigatorAnimation.SCALE)}
         />
       </Stack.Navigator>
     </NavigationContainer>
