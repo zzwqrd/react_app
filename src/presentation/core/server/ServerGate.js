@@ -119,13 +119,13 @@ class ServerGate {
       const finalUrl = url.startsWith("http") ? url : `${this.BASE_URL}${url}`;
       const response = await this.apiService.get(
         finalUrl, { headers, params });
-      return this._handleSuccessResponse(response);
-      // return new CustomResponse({
-      //   success: true,
-      //   statusCode: 200,
-      //   msg: 'File downloaded successfully',
-      //   response: response,
-      // });
+      // return this._handleSuccessResponse(response);
+      return new CustomResponse({
+        success: true,
+        statusCode: response.status,
+        msg: 'Request completed successfully',
+        data: response.data,
+      });
     } catch (error) {
       return this._handleErrorResponse(error);
     }
