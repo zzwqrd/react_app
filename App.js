@@ -6,7 +6,9 @@ import IndexScreen from './src/presentation/IndexScreen/IndexScreen';
 import AppRoutes from './src/presentation/core/routes/AppRoutes'; 
 
 const Stack = createStackNavigator();
+// import { name as appName } from './app.json';
 
+// AppRegistry.registerComponent(appName, () => App);
 export default function App() {
   return <AppRoutes />;
   // return (

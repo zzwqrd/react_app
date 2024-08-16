@@ -1,16 +1,16 @@
 import axios from 'axios';
-import { store } from './path/to/store'; // Assuming you have a Redux store
-import { updateProgress } from './path/to/slice'; // Assuming you track download/upload progress in Redux
+import { store } from './store'; // Assuming you have a Redux store
+import { updateProgress } from './progressSlice'; // Assuming you track download/upload progress in Redux
 import CustomResponse from './CustomResponse';
 import { handleError } from './errorHandler';
 class ServerGate {
   constructor() {
-    this.BASE_URL = null;
+    this.BASE_URL = 'http://webappkwidsoft.site/tanzeef/public/api/';
     this.apiService = axios.create({
       baseURL: this.BASE_URL,
       headers: {
         Accept: 'application/json',
-        lang: 'ar', // You can dynamically set this based on user settings or i18n
+        lang: 'en', // You can dynamically set this based on user settings or i18n
       },
       timeout: 5000,
     });
@@ -47,7 +47,7 @@ class ServerGate {
   async _getBaseUrl() {
     if (this.BASE_URL) return this.BASE_URL;
     try {
-      const response = await axios.get('https://firebaseio.com/base_url.json', {
+      const response = await axios.get('http://webappkwidsoft.site/tanzeef/public/api/', {
         headers: { Accept: 'application/json' },
       });
       if (response.data) {
@@ -116,8 +116,16 @@ class ServerGate {
     if (!withoutHeader) headers = { ...this._defaultHeaders(), ...headers };
 
     try {
-      const response = await this.apiService.get(url, { headers, params });
+      const finalUrl = url.startsWith("http") ? url : `${this.BASE_URL}${url}`;
+      const response = await this.apiService.get(
+        finalUrl, { headers, params });
       return this._handleSuccessResponse(response);
+      // return new CustomResponse({
+      //   success: true,
+      //   statusCode: 200,
+      //   msg: 'File downloaded successfully',
+      //   response: response,
+      // });
     } catch (error) {
       return this._handleErrorResponse(error);
     }

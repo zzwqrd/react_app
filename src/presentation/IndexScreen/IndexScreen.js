@@ -1,55 +1,81 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Image, StyleSheet, Dimensions, TouchableOpacity } from 'react-native';
-const {width, height} = Dimensions.get('window');
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import ServerGate from "./../core/server/ServerGate"; 
 
-// export default IndexScreen;
-export default IndexScreen = () => {
+const { width, height } = Dimensions.get("window");
+
+const IndexScreen = () => {
+  const [newsItems, setNewsItems] = useState([]);
+
   const [activeIndex, setActiveIndex] = useState(0);
-  const newsItems = [
-    {
-      id: 1,
-      title: "انباء عن انطلاق البطوله الدوليه والتي سيشارك ......",
-      image: 'https://brave-hopper-618122.netlify.app/assets/images/unnamed.jpg',
-    },
-    {
-      id: 2,
-      title: "انباء عن انطلاق البطوله الدوليه والتي سيشارك ......",
-      image: 'https://brave-hopper-618122.netlify.app/assets/images/unnamed.jpg',
-    },
-  ];
- 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const serverGate = ServerGate.instance;
+        const response = await serverGate.getFromServer({
+          url: "home/index", 
+        });
+        if (response.statusCode === 200) {
+          // تأكد من أن البيانات موجودة في البنية المتوقعة
+          if (
+            response.data &&
+            response.data.data &&
+            response.data.data.section
+          ) {
+            setNewsItems(response.data.data.section); // ضبط البيانات حسب بنية الاستجابة
+            console.log("Section Data:", response.data.data.section); // طباعة البيانات في وحدة التحكم
+          } else {
+            console.error("Data section not found in response:", response.data);
+            setNewsItems([]); // تعيين مصفوفة فارغة في حال عدم وجود البيانات
+          }
+        } else {
+          console.error("Failed to fetch data:", response.message);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
-    <ScrollView style={styles.container} >
-       {/* <View style={styles.appBar}>
-        <Text style={styles.appBarTitle}>My Home</Text>
-        <TouchableOpacity style={styles.appBarButton} onPress={() => alert('Button Pressed')}>
-          <Text style={styles.appBarButtonText}>Button</Text>
-        </TouchableOpacity>
-      </View> */}
+    <ScrollView style={styles.container}>
       <View style={styles.carouselContainer}>
         <ScrollView
-          horizontal={true}
-          pagingEnabled={true}
-          showsHorizontalScrollIndicator={false}
-          onScroll={(event) => {
-            const x = event.nativeEvent.contentOffset.x;
-            const index = Math.floor(x / (width - 60));
-            if (index !== activeIndex) {
-              setActiveIndex(index);
-            }
+           horizontal={true}
+           pagingEnabled={true}
+           showsHorizontalScrollIndicator={false}
+           onScroll={(event) => {
+             const x = event.nativeEvent.contentOffset.x;
+             const index = Math.floor(x / width);
+             if (index !== activeIndex) {
+               setActiveIndex(index);
+             }
           }}
           scrollEventThrottle={16}
         >
-          {newsItems.map((newsItems, index) => (
+          {newsItems && newsItems.length > 0 ? (
+           newsItems.map((item, index) => (
             <View key={index} style={styles.itemContainer}>
-              <Image source={{uri: newsItems.image}} style={styles.image} />
+              <Image source={{ uri: item.image }} style={styles.image} />
               <View style={styles.textContainer}>
-                <Text style={styles.title}>{newsItems.title}</Text>
-                {/* <Text style={styles.content}>{newsItems.content}</Text> */}
+                <Text style={styles.title}>{item.title_en}</Text>
               </View>
             </View>
-          ))}
+          ))
+          ) : (
+            <Text>No data available</Text> 
+          )}
         </ScrollView>
         {/* Pagination Dots */}
         <View style={styles.dotContainer}>
@@ -58,73 +84,53 @@ export default IndexScreen = () => {
               <View
                 style={[
                   styles.dot,
-                  { backgroundColor: index === activeIndex ? '#cacaca' : '#fff' },
+                  {
+                    backgroundColor: index === activeIndex ? "#cacaca" : "#fff",
+                  },
                 ]}
               />
             </TouchableOpacity>
           ))}
         </View>
       </View>
-      
+
       <View style={styles.newsContainer}>
         <Text style={styles.header}>احدث الاخبار</Text>
-        {newsItems.map((item) => (
-          <View key={item.id} style={styles.card}>
-            <Image source={{ uri: item.image }} style={styles.newsImage} />
-            <Text style={styles.newsTitle}>{item.title}</Text>
-          </View>
-        ))}
+        {Array.isArray(newsItems) &&
+          newsItems.map((item, index) => (
+           
+            <View key={item.id} style={styles.card}>
+              <Image source={{ uri: item.image }} style={styles.newsImage} />
+              <Text style={styles.newsTitle}>{item.title_en}</Text>
+            </View>
+          ))}
       </View>
     </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
   },
-  appBar: {
-    height: 60,
-    backgroundColor: '#f4511e',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexDirection: 'row',
-    paddingHorizontal: 10,
-    paddingTop: 10,
-  },
-  appBarTitle: {
-    flex: 1,
-    color: '#fff',
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  appBarButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-  },
-  appBarButtonText: {
-    color: '#fff',
-    fontSize: 16,
-  },
   carouselContainer: {
     height: height / 3,
+    width: width,
     alignItems: 'center',
     justifyContent: 'center',
   },
   itemContainer: {
-    width: width ,
+    width: width,
     height: height / 3,
     alignItems: 'center',
     justifyContent: 'center',
-    // marginHorizontal: 30,
   },
   image: {
-    width: '100%',
+    width: width,
     height: '60%',
     resizeMode: 'cover',
-    // borderRadius: 10,
   },
   textContainer: {
     width: '90%',
@@ -140,10 +146,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginBottom: 5,
-  },
-  content: {
-    fontSize: 14,
-    textAlign: 'center',
   },
   newsContainer: {
     padding: 16,
@@ -188,7 +190,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     backgroundColor: '#6e262c',
     borderBottomRightRadius: 25,
-    borderBottomLeftRadius:25,
+    borderBottomLeftRadius: 25,
   },
   dot: {
     width: 10,
@@ -198,3 +200,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ccc',
   },
 });
+
+
+export default IndexScreen;
